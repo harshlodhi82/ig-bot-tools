@@ -1,15 +1,15 @@
+import { Cookie } from "puppeteer-core";
 import nodeFetch, { RequestInit, HeadersInit } from "node-fetch";
 import { EnumRequestMethods, IHttpOptions, IHttpResponse, TypeRequestBody, TypeRequestHeaders, TypeResponseHeaders } from "./ig-request.interface";
 import { Utils } from "../../shared/libs";
-import { Cookie } from "puppeteer-core";
-import { ChromeCookiesService } from "../chrome-cookies";
+import { ChromeService } from "../chrome/chrome.service";
 
 
 export class InstagramRequestService {
 
 	//** Configurations */
-	private static USER_AGENTS = `Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/112.0`;
 	private static INSTAGRAM_APP_ID = `936619743392459`;
+
 
 	//** Cookies DB */
 	private static cookiesDB: Map<'cookies', { [key: string]: string }> = new Map();
@@ -86,13 +86,14 @@ export class InstagramRequestService {
 
 		//0 - prepare instagram cookies
 		const cookiesObject: { [key: string]: string } = await this.normalizeCookies();
+		const userAgent: string = await ChromeService.getBrowserUserAgent();
 		const cookiesString: string = Utils.cookiesObjectToString(cookiesObject);
 		const csrfToken: string = cookiesObject['csrftoken'];
 
 		//1 - prepare default headers
 		const defaultHeaders: HeadersInit = {
 			'cookie': cookiesString,
-			'User-Agent': this.USER_AGENTS,
+			'User-Agent': userAgent,
 			'x-ig-app-id': this.INSTAGRAM_APP_ID,
 			'x-csrftoken': csrfToken
 		};
@@ -135,7 +136,7 @@ export class InstagramRequestService {
 		let cookiesObject: { [key: string]: string } = this.cookiesDB.get('cookies');
 		if (cookiesObject) return cookiesObject;
 
-		const igCookiesArray: Cookie[] = await ChromeCookiesService.getInstagramCookies();
+		const igCookiesArray: Cookie[] = await ChromeService.getInstagramCookies();
 		cookiesObject = this.prepareCookiesObject(igCookiesArray);
 
 		this.cookiesDB.set('cookies', cookiesObject);

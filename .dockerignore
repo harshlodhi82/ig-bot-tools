@@ -1,6 +1,9 @@
 dist
 node_modules
 log
+logs
 tmp
 todo
+data
 .vscode
+.git

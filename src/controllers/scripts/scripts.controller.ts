@@ -13,8 +13,10 @@ export class ScriptsController {
             throw new Error(`Miss matching username "${envConfigs.USER_NAME}" and "${userInfo.data.user.username}"`);
         }
 
+        console.log(`=> userInfo:`, userInfo);
+
         //1 - run scripts
-        await this.scripts(userInfo);
+        // await this.scripts(userInfo);
     }
 
     private static async scripts(userInfo: IUserInfo) {

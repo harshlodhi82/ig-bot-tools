@@ -1,5 +1,6 @@
 import { envConfigs } from "../../configs/env";
 import { Utils } from "../../shared/libs";
+import { ChromeService } from "../chrome";
 import { InstagramRequestService } from "../instagram-request/instagram-request.service";
 import { FriendshipStatusResponse } from "./interfaces/follow-unfollow.interface";
 import { FollowerList, FollowingList } from "./interfaces/friendship-list.interface";
@@ -9,7 +10,6 @@ import { IPosCommentResponse, IUserInfo } from "./interfaces/user-info.interface
 export class UserService {
 
     private static userInfoDB: Map<'userInfo', IUserInfo> = new Map();
-    private static username = envConfigs.USER_NAME;
     private static MAX_FREINDSHIP_LIST_COUNT: number = 200;
 
     static getUserInfoFromCache(): IUserInfo {
@@ -20,7 +20,8 @@ export class UserService {
 
     static async getUserInfo(): Promise<IUserInfo> {
         try {
-            const api = `https://i.instagram.com/api/v1/users/web_profile_info/?username=${this.username}`;
+            const username: string = await ChromeService.getCurrentLoggedInUsername();
+            const api = `https://i.instagram.com/api/v1/users/web_profile_info/?username=${username}`;
             const response = await InstagramRequestService.get(api);
             const data: IUserInfo = await response.json();
             this.userInfoDB.set('userInfo', data);

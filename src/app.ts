@@ -5,7 +5,6 @@ import { envConfigs } from './configs/env';
 import express from 'express';
 import path from 'path';
 import { ScriptsController } from './controllers/scripts/scripts.controller';
-import { PuppeteerTest } from './puppeteer-test';
 
 
 const app = express();
@@ -23,9 +22,5 @@ app.use(express.urlencoded({ extended: true }));
 //** listen to app */
 app.listen(port, async () => {
     console.log(`✔\t ENV: ${env} || App is listening on port ${port}`);
-
-
-    await PuppeteerTest.test();
-
-    // await ScriptsController.init();
+    await ScriptsController.init();
 });

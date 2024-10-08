@@ -102,7 +102,7 @@ export class Utils {
 
     static isStringJSON(jsonString: string): boolean {
         try {
-            const jsonObj: any = JSON.parse(jsonString);
+            JSON.parse(jsonString);
             return true;
         } catch (error: unknown) {
             return false;
